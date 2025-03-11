@@ -23,6 +23,7 @@ public class User  implements UserDetails {
     private Long id;
     private String name;
     private String password;
+    @Column(unique = true, nullable = false)
     private String email;
     private String phone;
     private String gender;
@@ -32,7 +33,7 @@ public class User  implements UserDetails {
     private UserStatus status;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Product> products= new ArrayList<>();
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Cart cart;
 
 

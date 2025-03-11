@@ -3,10 +3,9 @@ package com.ecommerce.service;
 import com.ecommerce.dto.InsertProduct;
 import com.ecommerce.dto.ResponseCategory;
 import com.ecommerce.dto.ResponseProduct;
-import com.ecommerce.entities.Category;
-import com.ecommerce.entities.Product;
-import com.ecommerce.entities.User;
+import com.ecommerce.entities.*;
 import com.ecommerce.exception.ResourceNotFoundException;
+import com.ecommerce.exception.VendorErrorException;
 import com.ecommerce.repository.CategoryRepo;
 import com.ecommerce.repository.ProductRepo;
 import com.ecommerce.repository.UserRepo;
@@ -28,6 +27,11 @@ public class ProductService {
     public ResponseProduct save(InsertProduct product){
         List<Category> categories = product.getCategories().stream().map(id-> cRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Category"))).toList();
         User user = uRepo.findById(product.getUser()).orElseThrow(()-> new ResourceNotFoundException("User"));
+        if (user.getStatus().equals(UserStatus.PENDING)){
+            throw new VendorErrorException("Your Account Status is under pending");
+        } else if (user.getStatus().equals(UserStatus.REJECTED)) {
+            throw new VendorErrorException("Your Account Status is Rejected");
+        }
         Product pro = new Product();
         pro.setName(product.getName());
         pro.setPrice(product.getPrice());

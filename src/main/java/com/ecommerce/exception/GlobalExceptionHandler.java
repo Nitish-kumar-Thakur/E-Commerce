@@ -20,6 +20,12 @@ public class GlobalExceptionHandler {
         Map<String, Object> response = Map.of("status", false, "message", error);
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
+    @ExceptionHandler(VendorErrorException.class)
+    public ResponseEntity<?> vendorErrorException(VendorErrorException ex) {
+        String error = ex.getMessage();
+        Map<String, Object> response = Map.of("status", false, "message", error);
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
 
     // CredentialErrorException
     @ExceptionHandler(CredentialErrorException.class)
@@ -57,7 +63,7 @@ public class GlobalExceptionHandler {
     }
 
 
-    // Handle Other Exceptions
+//     Handle Other Exceptions
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleGeneralException(Exception ex) {
         Map<String, Object> response = new HashMap<>();

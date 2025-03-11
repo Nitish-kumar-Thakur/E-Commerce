@@ -9,6 +9,7 @@ import com.ecommerce.exception.ResourceNotFoundException;
 import com.ecommerce.repository.CartRepo;
 import com.ecommerce.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
@@ -16,6 +17,10 @@ import java.util.List;
 
 @Repository
 public class UserService {
+//    @Autowired
+//    private SimpMessagingTemplate messagingTemplate;
+    @Autowired
+    private EmailService emailService;
     @Autowired
     UserRepo repo;
     @Autowired
@@ -39,10 +44,20 @@ public class UserService {
         // Save the user to the database
         User savedUser = repo.save(user);
 
-        // Create and associate a cart with the saved user
-        Cart cart = new Cart();
-        cart.setUser(savedUser); // Associate the cart with the user
-        cartRepo.save(cart); // Save the cart
+
+
+        if(savedUser.getRole().equals(Role.CUSTOMER)){
+            // Create and associate a cart with the saved user
+            Cart cart = new Cart();
+            cart.setUser(savedUser); // Associate the cart with the user
+            cartRepo.save(cart); // Save the cart
+            emailService.sendCustomerApprovedEmail(savedUser.getEmail(), savedUser.getName());
+        }
+        else if (savedUser.getRole().equals(Role.VENDOR)) {
+//            messagingTemplate.convertAndSend("/admin/notifications", "New vendor registered: " + user.getEmail());
+            emailService.sendVendorRegisteredEmail(savedUser.getEmail(), savedUser.getName());
+        }
+
 
         // Return the user details as a DTO
         return userToDto(savedUser);
