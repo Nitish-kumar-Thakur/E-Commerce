@@ -17,8 +17,8 @@ import java.util.List;
 
 @Repository
 public class UserService {
-//    @Autowired
-//    private SimpMessagingTemplate messagingTemplate;
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
     @Autowired
     private EmailService emailService;
     @Autowired
@@ -54,7 +54,7 @@ public class UserService {
             emailService.sendCustomerApprovedEmail(savedUser.getEmail(), savedUser.getName());
         }
         else if (savedUser.getRole().equals(Role.VENDOR)) {
-//            messagingTemplate.convertAndSend("/admin/notifications", "New vendor registered: " + user.getEmail());
+            messagingTemplate.convertAndSend("/admin/notifications", "New vendor registered: " + user.getEmail());
             emailService.sendVendorRegisteredEmail(savedUser.getEmail(), savedUser.getName());
         }
 

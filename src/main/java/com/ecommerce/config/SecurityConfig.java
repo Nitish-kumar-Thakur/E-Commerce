@@ -29,9 +29,11 @@ public class SecurityConfig{
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http.authorizeHttpRequests(e->
             e
-                    .requestMatchers("/user/**","/login","/category/**", "/cart/**").permitAll()
+                    .requestMatchers("/user/**","/login","/category/**",
+                            "/cart/**", "/product/**").permitAll()
+                    .requestMatchers("/ws/**", "/admin/notifications","/test/**").permitAll()
                     .requestMatchers("/admin/**").hasAuthority("ADMIN")
-                    .requestMatchers("/product/**").hasAuthority("VENDOR")
+//                    .requestMatchers("/product/**").hasAuthority("VENDOR")
                     .anyRequest().authenticated()
                 )
                 .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

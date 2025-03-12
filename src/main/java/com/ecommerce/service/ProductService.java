@@ -60,6 +60,9 @@ public class ProductService {
         return pRepo.findAllByUserId(id).stream().map(this::productToDto).toList();
     }
     public List<ResponseProduct> productsByCategories(List<Long> ids){
+        if(ids.isEmpty()){
+            return pRepo.findAll().stream().map(this::productToDto).toList();
+        }
         return pRepo.findAllByCategories(ids).stream().map(this::productToDto).toList();
     }
 
